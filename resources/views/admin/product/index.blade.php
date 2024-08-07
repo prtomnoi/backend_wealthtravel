@@ -1,12 +1,12 @@
 @extends('layout')
 
-@section('title', 'Service')
+@section('title', 'Product')
 
 @section('pages')
-    <li class="breadcrumb-item text-sm text-dark"><a href="{{ route('service.index') }}">Service</a></li>
+    <li class="breadcrumb-item text-sm text-dark"><a href="{{ route('product.index') }}">Product</a></li>
 @endsection
 
-@section('pages-title', 'Service')
+@section('pages-title', 'Product')
 
 @section('contents')
     <div class="container-fluid py-4">
@@ -29,7 +29,7 @@
                         </div>
                     @endif
                     <div class="d-flex justify-content-end">
-                        <a href="{{ route('service.create') }}"
+                        <a href="{{ route('product.create') }}"
                             class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
                             data-original-title="Create user">
                             Create
@@ -41,8 +41,8 @@
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Title</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Service Type</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Product Type</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         Actions</th>
                                 </tr>
@@ -52,17 +52,17 @@
                                     <tr>
                                         <td class="align-middle">
                                             <div class="d-flex px-2 py-1">
-                                                {{ @$item->title }}
+                                                {{ @$item->name }}
                                             </div>
                                         </td>
                                         <td class="align-middle">
                                             <div class="d-flex px-2 py-1">
-                                                {{ @$item->serviceType?->name }}
+                                                {{ @$item->productType?->name }}
                                             </div>
                                         </td>
                                         <td class="align-middle">
                                             <div class="d-flex px-2 py-1">
-                                                <a href="{{ route('service.edit', @$item->id) }}"
+                                                <a href="{{ route('product.edit', @$item->id) }}"
                                                     class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
                                                     data-original-title="Edit user">
                                                     Edit
@@ -106,7 +106,7 @@
                 confirmButtonText: 'Yes'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    var is_url = "{{ route('service.destroy', ':id') }}";
+                    var is_url = "{{ route('product.destroy', ':id') }}";
                     $.ajax({
                         url: is_url.replace(':id', id),
                         type: 'DELETE',

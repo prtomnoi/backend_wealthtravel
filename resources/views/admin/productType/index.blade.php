@@ -1,12 +1,12 @@
 @extends('layout')
 
-@section('title', 'Service Types')
+@section('title', 'Product Types')
 
 @section('pages')
-    <li class="breadcrumb-item text-sm text-dark"><a href="{{ route('permission.index') }}">Service Types</a></li>
+    <li class="breadcrumb-item text-sm text-dark"><a href="{{ route('productType.index') }}">Product Types</a></li>
 @endsection
 
-@section('pages-title', 'Service Type')
+@section('pages-title', 'Product Type')
 
 @section('contents')
     <div class="container-fluid py-4">
@@ -29,7 +29,7 @@
                         </div>
                     @endif
                     <div class="d-flex justify-content-end">
-                        <a href="{{ route('serviceType.create') }}"
+                        <a href="{{ route('productType.create') }}"
                             class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
                             data-original-title="Create user">
                             Create
@@ -41,7 +41,7 @@
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Service Type</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Product Type</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         Actions</th>
                                 </tr>
@@ -56,7 +56,7 @@
                                         </td>
                                         <td class="align-middle">
                                             <div class="d-flex px-2 py-1">
-                                                <a href="{{ route('serviceType.edit', @$item->id) }}"
+                                                <a href="{{ route('productType.edit', @$item->id) }}"
                                                     class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
                                                     data-original-title="Edit user">
                                                     Edit
@@ -100,7 +100,7 @@
                 confirmButtonText: 'Yes'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    var is_url = "{{ route('serviceType.destroy', ':id') }}";
+                    var is_url = "{{ route('productType.destroy', ':id') }}";
                     $.ajax({
                         url: is_url.replace(':id', id),
                         type: 'DELETE',

@@ -1,14 +1,14 @@
 @extends('layout')
 
-@section('title', 'Service Types')
+@section('title', 'Product Types')
 
 @section('pages')
     <li class="breadcrumb-item text-sm text-dark"><a class="opacity-5 text-dark"
-            href="{{ route('serviceType.index') }}">Service Type</a></li>
-    <li class="breadcrumb-item text-sm text-dark"><a href="{{ route('serviceType.edit', @$main->id) }}">edit</a></li>
+            href="{{ route('productType.index') }}">Product Type</a></li>
+    <li class="breadcrumb-item text-sm text-dark"><a href="{{ route('productType.edit', @$main->id) }}">edit</a></li>
 @endsection
 
-@section('pages-title', 'Service Type')
+@section('pages-title', 'Product Type')
 
 @section('contents')
     <div class="container-fluid py-4">
@@ -32,13 +32,13 @@
                     @endif
                 </div>
                 <div class="card-body px-3 pb-2">
-                    <form action="{{ route('serviceType.update', @$main->id) }}" method="POST">
+                    <form action="{{ route('productType.update', @$main->id) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="d-flex">
                             <x-flag-contry></x-flag-contry>
                         </div>
-                        <h6 class="text-uppercase text-body text-xs font-weight-bolder"> Create Service Type </h6>
+                        <h6 class="text-uppercase text-body text-xs font-weight-bolder"> Create Product Type </h6>
                         <ul class="list-group">
                             <li class="list-group-item border-0 px-0">
                                 <div class="form-group form-switch ps-0">
@@ -48,7 +48,7 @@
                                 </div>
                             </li>
                         </ul>
-                        <a class="btn bg-gradient-secondary" href="{{ route('serviceType.index') }}">Back</a>
+                        <a class="btn bg-gradient-secondary" href="{{ route('productType.index') }}">Back</a>
                         <button class="btn bg-gradient-dark" type="submit">Save</button>
                     </form>
                 </div>

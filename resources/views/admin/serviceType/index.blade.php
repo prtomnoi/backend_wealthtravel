@@ -3,7 +3,7 @@
 @section('title', 'Service Types')
 
 @section('pages')
-    <li class="breadcrumb-item text-sm text-dark"><a href="{{ route('permission.index') }}">Service Types</a></li>
+    <li class="breadcrumb-item text-sm text-dark"><a href="{{ route('serviceType.index') }}">Service Types</a></li>
 @endsection
 
 @section('pages-title', 'Service Type')

@@ -16,6 +16,8 @@ Route::middleware(HandleAuth::class)->group(function(){
     });
     Route::resource('serviceType', AppController\ServiceTypeController::class);
     Route::resource('service', AppController\ServiceController::class);
+    Route::resource('productType', AppController\ProductTypeController::class);
+    Route::resource('product', AppController\ProductController::class);
 
     // superadmin function
     Route::resource('permission', AppSuperAdminController\PermissionController::class);

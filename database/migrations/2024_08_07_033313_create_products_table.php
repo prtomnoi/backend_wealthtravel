@@ -13,7 +13,13 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            // $table->string('title')
+            $table->json('name');
+            $table->string('image')->nullable()->comment('path image');
+            $table->double('price')->default(0)->comment('price');
+            $table->enum('star', [0, 1, 2, 3, 4, 5])->default(0)->comment('review star product');
+            $table->double('price_sale')->default(0)->comment('for sale');
+            $table->bigInteger('product_type_id')->comment('fk proruct_type');
+            $table->enum('status', ['ACTIVE', 'UNACTIVE'])->default('ACTIVE');
             $table->timestamps();
         });
     }

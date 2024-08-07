@@ -3,6 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 return new class extends Migration
 {
@@ -17,6 +19,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->unsignedBigInteger('role_id');
+            $table->unsignedBigInteger('person_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
@@ -35,6 +39,10 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        DB::insert('insert into users (name, email, password, role_id) values (?, ?, ?, ?)', ['SuperAdmin', 'superadmin@testing.com', Hash::make('123456789'), 1]);
+        DB::insert('insert into users (name, email, password, role_id) values (?, ?, ?, ?)', ['Admin', 'admin@testing.com', Hash::make('123456789'), 2]);
+        DB::insert('insert into users (name, email, password, role_id) values (?, ?, ?, ?)', ['Staff', 'staff@testing.com', Hash::make('123456789'), 3]);
     }
 
     /**

@@ -20,6 +20,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
     ];
 
     /**
@@ -43,5 +44,28 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function checkSuperAdmin()
+    {
+        $data = Role::select('name')->where('id', $this->role_id)->first();
+        return $data?->name == 'SUPER_ADMIN' ? true : false;
+    }
+
+    public function checkAdmin()
+    {
+        $data = Role::select('name')->where('id', $this->role_id)->first();
+        return $data?->name == 'ADMIN' ? true : false;
+    }
+
+    public function checkStaff()
+    {
+        $data = Role::select('name')->where('id', $this->role_id)->first();
+        return $data?->name == 'STAFF' ? true : false;
     }
 }

@@ -18,6 +18,12 @@ Route::middleware(HandleAuth::class)->group(function(){
     Route::resource('service', AppController\ServiceController::class);
     Route::resource('productType', AppController\ProductTypeController::class);
     Route::resource('product', AppController\ProductController::class);
+    Route::resource('tourType', AppController\TourTypeController::class);
+    Route::resource('tour', AppController\TourController::class);
+    Route::delete('/attachment/{id}', [AppController\AttachmentController::class, 'destroy']);
+
+    // city by contry
+    Route::get('/cityByContry/{iso}', [AppController\CityController::class, 'cityByContry']);
 
     // superadmin function
     Route::resource('permission', AppSuperAdminController\PermissionController::class);

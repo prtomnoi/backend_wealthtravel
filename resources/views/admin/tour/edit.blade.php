@@ -1,0 +1,237 @@
+@extends('layout')
+
+@section('title', 'Tour')
+
+@section('pages')
+    <li class="breadcrumb-item text-sm text-dark"><a class="opacity-5 text-dark" href="{{ route('tour.index') }}">Tour</a></li>
+    <li class="breadcrumb-item text-sm text-dark"><a href="{{ route('tour.edit', @$main->id) }}">edit</a></li>
+@endsection
+
+@section('pages-title', 'Tour')
+
+@section('contents')
+    <div class="container-fluid py-4">
+        <div class="col-lg-12 col-md-12 mb-md-0 mb-4">
+            <div class="card">
+                <div class="card-header pb-0">
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">x</button>
+                        </div>
+                    @endif
+                    @if ($errors->any())
+                        <div class="alert alert-danger mt-3 text-white">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                </div>
+                <div class="card-body px-3 pb-2">
+                    <form action="{{ route('tour.update', @$main->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <div class="d-flex">
+                            <x-flag-contry></x-flag-contry>
+                        </div>
+
+                        <h6 class="text-uppercase text-body text-xs font-weight-bolder"> Create Tour </h6>
+                        <ul class="list-group">
+                            <li class="list-group-item border-0 px-0">
+                                <div class="form-group form-switch ps-0">
+                                    <label for="title">Type</label>
+                                    <select name="type" id="type" class="form-control">
+                                        @foreach (@$tourType as $item)
+                                            <option value="{{ @$item->id }}"
+                                                @if (@$item->id == @$main->tour_type_id) selected @endif>{{ @$item->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </li>
+                            <li class="list-group-item border-0 px-0">
+                                <div class="form-group form-switch ps-0">
+                                    <label for="title">Title</label>
+                                    <input class="form-control" type="text" id="title" name="title"
+                                        value="{{ @$main->title }}">
+                                </div>
+                            </li>
+                            <li class="list-group-item border-0 px-0">
+                                <div class="form-group form-switch ps-0">
+                                    <label for="sub_desc">Sub Description</label>
+                                    <textarea class="form-control" rows="5" id="sub_desc" name="sub_desc">{{ @$main->sub_desc }}</textarea>
+                                </div>
+                            </li>
+                            <li class="list-group-item border-0 px-0">
+                                <div class="form-group form-switch ps-0">
+                                    <label for="desc">Description</label>
+                                    <textarea class="form-control" rows="5" id="desc" name="desc">{{ @$main->desc }}</textarea>
+                                </div>
+                            </li>
+                            <li class="list-group-item border-0 px-0">
+                                <div class="form-group form-switch ps-0">
+                                    <label for="Contry">Contry</label>
+                                    <select name="Contry" id="Contry" class="form-control"
+                                        onchange="getCityByContry(this)">
+                                        <option value="">--- Select contry ---</option>
+                                        @foreach (@$contry as $item)
+                                            <option value="{{ @$item->alpha_3 }}"
+                                                @if (@$item->alpha_3 == @$main->city?->iso3) selected @endif>{{ @$item->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </li>
+                            <li class="list-group-item border-0 px-0">
+                                <div class="form-group form-switch ps-0">
+                                    <label for="city_id">City</label>
+                                    <select name="city_id" id="city_id" class="form-control">
+                                        @foreach (@$city as $item)
+                                            <option value="{{ @$item->id }}"
+                                                @if (@$item->id == @$main->city_id) selected @endif>{{ @$item->city }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </li>
+                            <li class="list-group-item border-0 px-0">
+                                <div class="form-group form-switch ps-0">
+                                    <label for="start_date">Start date tour</label>
+                                    <input type="date" class="form-control" name="start_date" id="start_date"
+                                        value="{{ @$main->start_date }}" />
+                                </div>
+                            </li>
+                            <li class="list-group-item border-0 px-0">
+                                <div class="form-group form-switch ps-0">
+                                    <label for="end_date">End date tour</label>
+                                    <input type="date" class="form-control" name="end_date" id="end_date"
+                                        value="{{ @$main->end_date }}" />
+                                </div>
+                            </li>
+                            <li class="list-group-item border-0 px-0">
+                                <div class="form-group form-switch ps-0">
+                                    <label for="duration">Duration</label>
+                                    <input type="text" class="form-control" name="duration" id="duration"
+                                        value="{{ @$main->duration }}" />
+                                </div>
+                            </li>
+                            <li class="list-group-item border-0 px-0">
+                                <div class="form-group form-switch ps-0">
+                                    <label for="price">Price</label>
+                                    <input type="text" class="form-control" name="price" id="price"
+                                        value="{{ @$main->price }}" />
+                                </div>
+                            </li>
+                            <li class="list-group-item border-0 px-0">
+                                <label class="form__container" id="upload-container">Select Image or Drag
+                                    <input class="form__file" id="upload-files" type="file" accept="image/*"
+                                        multiple="multiple" name="uploadImage[]" />
+                                </label>
+                                <div class="form__files-container" id="files-list-container">
+                                </div>
+                            </li>
+                        </ul>
+                        <a class="btn bg-gradient-secondary" href="{{ route('tour.index') }}">Back</a>
+                        <button class="btn bg-gradient-dark" type="submit">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('scripts')
+    <link rel="stylesheet" href="{{ asset('assets/css/uploadFile.css') }}">
+    <script src="{{ asset('assets/js/uploadFile.js') }}"></script>
+    <meta name="_token" content="{{ csrf_token() }}">
+    {{-- editor --}}
+    <link rel="stylesheet" href="{{ asset('assets/libs/summernote/summernote-lite.min.css') }}">
+    <script src="{{ asset('assets/libs/summernote/summernote-lite.min.js') }}"></script>
+    <script>
+        function changeLange(e) {
+            document.getElementById("lange").value = e.id;
+            document.getElementById("imageFlagDrowdown").src = e.querySelector('img').src;
+        }
+
+        function setInputFilter(textbox, inputFilter, errMsg) {
+            ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop", "focusout"].forEach(
+                function(event) {
+                    textbox.addEventListener(event, function(e) {
+                        if (inputFilter(this.value)) {
+                            // Accepted value.
+                            if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
+                                this.classList.remove("input-error");
+                                this.setCustomValidity("");
+                            }
+
+                            this.oldValue = this.value;
+                            this.oldSelectionStart = this.selectionStart;
+                            this.oldSelectionEnd = this.selectionEnd;
+                        } else if (this.hasOwnProperty("oldValue")) {
+                            // Rejected value: restore the previous one.
+                            this.classList.add("input-error");
+                            this.setCustomValidity(errMsg);
+                            this.reportValidity();
+                            this.value = this.oldValue;
+                            this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                        } else {
+                            // Rejected value: nothing to restore.
+                            this.value = "";
+                        }
+                    });
+                });
+        }
+        setInputFilter(document.getElementById("price"), function(value) {
+            return /^-?\d*[.,]?\d{0,2}$/.test(value);
+        }, "Must be a currency value");
+        // Install input filters.
+        setInputFilter(document.getElementById("duration"), function(value) {
+            return /^-?\d*$/.test(value);
+        }, "Must be an integer");
+    </script>
+    <script>
+        function getCityByContry(e) {
+            if (e.value) {
+                $('#city_id').attr('disabled', false);
+                console.log(e.value)
+                $.ajax({
+                    type: "GET",
+                    url: `/cityByContry/${e.value}`,
+                    success: function(response) {
+                        var html = '';
+                        response.data.forEach(e => {
+                            html += `<option value="${e.id}">${e.city}</option>`
+                        });
+                        console.log(html)
+                        $('#city_id').html(html);
+
+                    }
+                });
+            } else {
+                $('#city_id').attr('disabled', true);
+                $('#city_id').html('');
+            }
+        }
+        $('#desc').summernote({
+            height: 200
+        });
+    </script>
+    <script>
+        const uploadFile = @json(@$main->AttachFile);
+        uploadFile.forEach(element => {
+            var url = "{{ asset('app/:imageName') }}";
+            FILE_LIST.push({
+                name: element.name,
+                url: url.replace(":project", element.group).replace(":imageName", element.path),
+                id: element.id,
+            })
+        });
+
+        previewImages();
+        UPLOADED_FILES = document.querySelectorAll(".js-remove-image");
+        removeFile();
+    </script>
+@endsection

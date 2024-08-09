@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Country extends Model
 {
     use HasFactory;
+
+    public function city()
+    {
+        return $this->belongsToMany(City::class, 'cities', 'iso3', 'alpha_3');
+    }
 }

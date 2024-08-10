@@ -30,9 +30,9 @@
                     @endif
                     <div class="d-flex justify-content-end">
                         <a href="{{ route('tour.create') }}"
-                            class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
+                            class="btn btn-sm btn-info font-weight-bold text-xs" data-toggle="tooltip"
                             data-original-title="Create user">
-                            Create
+                            Create +
                         </a>
                     </div>
                 </div>
@@ -63,12 +63,12 @@
                                         <td class="align-middle">
                                             <div class="d-flex px-2 py-1">
                                                 <a href="{{ route('tour.edit', @$item->id) }}"
-                                                    class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
+                                                    class="btn btn-sm btn-warning m-1 font-weight-bold text-xs" data-toggle="tooltip"
                                                     data-original-title="Edit user">
                                                     Edit
                                                 </a>
                                                 <div onclick="deleteItem({{ @$item->id }})"
-                                                    class="text-danger font-weight-bold text-xs px-3 cursor-pointer" data-toggle="tooltip"
+                                                    class="btn btn-sm btn-danger m-1 font-weight-bold text-xs px-3 cursor-pointer" data-toggle="tooltip"
                                                     data-original-title="Delete user">
                                                     Delete
                                                 </div>

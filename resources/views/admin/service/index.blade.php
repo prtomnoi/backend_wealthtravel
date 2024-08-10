@@ -30,9 +30,9 @@
                     @endif
                     <div class="d-flex justify-content-end">
                         <a href="{{ route('service.create') }}"
-                            class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
+                            class="btn btn-sm btn-info  font-weight-bold text-xs" data-toggle="tooltip"
                             data-original-title="Create user">
-                            Create
+                            Create +
                         </a>
                     </div>
                 </div>

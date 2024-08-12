@@ -20,20 +20,21 @@ class TourTypeController extends Controller
 
     public function create(Request $request)
     {
-        return view('admin.tourType.create');
+        $config_lang = $this->lang();
+        return view('admin.tourType.create', compact('config_lang'));
     }
 
     public function store(Request $request)
     {
-        $validate = $request->validate([
-            'name' => ['required'],
-            'status' => ['sometimes'],
-            'lange' => ['sometimes'],
-        ]);
         try {
             DB::beginTransaction();
             $main = new Models\TourType();
-            $main->setTranslation('name', $request->input('lange', 'en'), $validate['name']);
+            $datalange = $request->input('datalange');
+            $name = [];
+            foreach ($this->lang() as $key => $value) {
+                $name[$value] = $datalange[$value]['name'] ?? null;
+            }
+            $main->name = $name;
             $main->status = $request->input('status', 'ACTIVE');
             $main->save();
             DB::commit();
@@ -47,19 +48,21 @@ class TourTypeController extends Controller
     public function edit(Request $request, $id)
     {
         $main = Models\TourType::find($id);
-        return view('admin.tourType.edit', compact('main'));
+        $config_lang = $this->lang();
+        return view('admin.tourType.edit', compact('main', 'config_lang'));
     }
 
     public function update(Request $request, $id)
     {
-        $validate = $request->validate([
-            'name' => ['sometimes'],
-            'status' => ['sometimes'],
-        ]);
         try {
             DB::beginTransaction();
             $main = Models\TourType::find($id);
-            $main->setTranslation('name', $request->input('lange', 'en'), $request->input('name', ''));
+            $datalange = $request->input('datalange');
+            $name = [];
+            foreach ($this->lang() as $key => $value) {
+                $name[$value] = $datalange[$value]['name'] ?? null;
+            }
+            $main->name = $name;
             $main->status = $request->input('status', $main->status);
             $main->save();
             // $main->update($validate);

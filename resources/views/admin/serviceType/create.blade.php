@@ -41,12 +41,15 @@
                         <h6 class="text-uppercase text-body text-xs font-weight-bolder "> Create Service Type </h6>
                         <input type="text" class="d-none" name="id[]" value="{{ @$item->id }}">
                         <ul class="list-group">
+                            @foreach (@$config_lang ?? [] as $key => $item)
+
                             <li class="list-group-item border-0 px-0">
-                                <div class="form-group form-switch ps-0">
-                                    <label for="form-label text-body ms-3 text-truncate w-80 mb-0">Name</label>
-                                    <input class="form-control" type="text" id="name" name="name">
+                                <div class="form-group form-switch ps-0 datalange datalange_{{$item}} @if($key != 0) d-none @endif">
+                                    <label for="form-label text-body ms-3 text-truncate w-80 mb-0">Name [{{ $item }}]</label>
+                                    <input class="form-control" type="text" id="datalange[{{ $item }}][name]" name="datalange[{{ $item }}][name]">
                                 </div>
                             </li>
+                            @endforeach
                         </ul>
                         <a class="btn bg-gradient-secondary" href="{{ route('serviceType.index') }}">Back</a>
                         <button class="btn bg-gradient-dark" type="submit">Save</button>
@@ -62,6 +65,14 @@
         function changeLange(e) {
             document.getElementById("lange").value = e.id;
             document.getElementById("imageFlagDrowdown").src = e.querySelector('img').src;
+            lange = document.querySelectorAll(`.datalange`);
+            lange.forEach(element => {
+                if(element.classList.contains(`datalange_${e.id}`)){
+                    element.classList.remove("d-none");
+                } else {
+                    element.classList.add("d-none");
+                }
+            });
         }
     </script>
 @endsection

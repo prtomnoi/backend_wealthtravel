@@ -52,25 +52,26 @@
                                     </select>
                                 </div>
                             </li>
-                            <li class="list-group-item border-0 px-0">
+                            @foreach (@$config_lang ?? [] as $key => $item)
+                            <li class="list-group-item border-0 px-0 datalange datalange_{{$item}} @if($key != 0) d-none @endif">
                                 <div class="form-group form-switch ps-0">
-                                    <label for="title">Title</label>
-                                    <input class="form-control" type="text" id="title" name="title"
-                                        value="{{ @$main->title }}">
+                                    <label for="title">Title [{{$item}}]</label>
+                                    <input class="form-control" type="text" id="datalange[{{ $item }}][title]" name="datalange[{{ $item }}][title]" value="{{ @$main->getTranslation("title", $item) ?? null }}">
                                 </div>
                             </li>
-                            <li class="list-group-item border-0 px-0">
+                            <li class="list-group-item border-0 px-0 datalange datalange_{{$item}} @if($key != 0) d-none @endif">
                                 <div class="form-group form-switch ps-0">
-                                    <label for="sub_desc">Sub Description</label>
-                                    <textarea class="form-control" rows="5" id="sub_desc" name="sub_desc">{{ @$main->sub_desc }}</textarea>
+                                    <label for="title">Sub Description [{{$item}}]</label>
+                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" id="datalange[{{ $item }}][sub_desc]" name="datalange[{{ $item }}][sub_desc]">{{ @$main->getTranslation("sub_desc", $item) ?? null }}</textarea>
                                 </div>
                             </li>
-                            <li class="list-group-item border-0 px-0">
+                            <li class="list-group-item border-0 px-0 datalange datalange_{{$item}} @if($key != 0) d-none @endif">
                                 <div class="form-group form-switch ps-0">
-                                    <label for="desc">Description</label>
-                                    <textarea class="form-control" rows="5" id="desc" name="desc">{{ @$main->desc }}</textarea>
+                                    <label for="title">Description [{{$item}}]</label>
+                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" id="datalange[{{ $item }}][desc]" name="datalange[{{ $item }}][desc]">{{ @$main->getTranslation("desc", $item) ?? null }}</textarea>
                                 </div>
                             </li>
+                            @endforeach
                             <li class="list-group-item border-0 px-0">
                                 <div class="form-group form-switch ps-0">
                                     <label for="Contry">Contry</label>
@@ -228,6 +229,14 @@
         function changeLange(e) {
             document.getElementById("lange").value = e.id;
             document.getElementById("imageFlagDrowdown").src = e.querySelector('img').src;
+            lange = document.querySelectorAll(`.datalange`);
+            lange.forEach(element => {
+                if(element.classList.contains(`datalange_${e.id}`)){
+                    element.classList.remove("d-none");
+                } else {
+                    element.classList.add("d-none");
+                }
+            });
         }
 
         function setInputFilter(textbox, inputFilter, errMsg) {

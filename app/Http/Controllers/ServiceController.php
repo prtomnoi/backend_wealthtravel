@@ -22,20 +22,12 @@ class ServiceController extends Controller
     public function create(Request $request)
     {
         $serviceType = Models\ServiceType::all();
-        return view('admin.service.create', compact('serviceType'));
+        $config_lang = $this->lang();
+        return view('admin.service.create', compact('serviceType', 'config_lang'));
     }
 
     public function store(Request $request)
     {
-        $validate = $request->validate([
-            'title' => ['required'],
-            'sub_desc' => ['sometimes'],
-            'desc' => ['sometimes'],
-            'image' => ['sometimes'],
-            'date' => ['sometimes'],
-            'lange' => ['sometimes'],
-            'type' => ['required'],
-        ]);
         try {
             DB::beginTransaction();
             if ($request->hasFile('image')) {
@@ -46,9 +38,15 @@ class ServiceController extends Controller
                 $file_name = null;
             }
             $main = new Models\Service();
-            $main->setTranslation('title', $request->input('lange', 'en'), $validate['title']);
-            $main->setTranslation('sub_desc', $request->input('lange', 'en'), $request->input('sub_desc', ''));
-            $main->setTranslation('desc', $request->input('lange', 'en'), $request->input('desc', ''));
+            $datalange = $request->input('datalange');
+            foreach ($this->lang() as $key => $value) {
+                $title[$value] = $datalange[$value]['title'] ?? null;
+                $sub_desc[$value] = $datalange[$value]['sub_desc'] ?? null;
+                $desc[$value] = $datalange[$value]['desc'] ?? null;
+            }
+            $main->title = $title;
+            $main->sub_desc = $sub_desc;
+            $main->desc = $desc;
             $main->image = $file_name;
             $main->date = $request->input('date', now());
             $main->status = $request->input('status', 'ACTIVE');
@@ -66,20 +64,12 @@ class ServiceController extends Controller
     {
         $main = Models\Service::find($id);
         $serviceType = Models\ServiceType::all();
-        return view('admin.service.edit', compact('main', 'serviceType'));
+        $config_lang = $this->lang();
+        return view('admin.service.edit', compact('main', 'serviceType', 'config_lang'));
     }
 
     public function update(Request $request, $id)
     {
-        $validate = $request->validate([
-            'title' => ['sometimes'],
-            'sub_desc' => ['sometimes'],
-            'desc' => ['sometimes'],
-            'image' => ['sometimes'],
-            'date' => ['sometimes'],
-            'lange' => ['sometimes'],
-            'type' => ['sometimes'],
-        ]);
         try {
             DB::beginTransaction();
             $main = Models\Service::find($id);
@@ -93,9 +83,15 @@ class ServiceController extends Controller
             } else {
                 $file_name = $main->image;
             }
-            $main->setTranslation('title', $request->input('lange', 'en'), $request->input('title', $main->title));
-            $main->setTranslation('sub_desc', $request->input('lange', 'en'), $request->input('sub_desc', $main->sub_desc));
-            $main->setTranslation('desc', $request->input('lange', 'en'), $request->input('desc', $main->desc));
+            $datalange = $request->input('datalange');
+            foreach ($this->lang() as $key => $value) {
+                $title[$value] = $datalange[$value]['title'] ?? null;
+                $sub_desc[$value] = $datalange[$value]['sub_desc'] ?? null;
+                $desc[$value] = $datalange[$value]['desc'] ?? null;
+            }
+            $main->title = $title;
+            $main->sub_desc = $sub_desc;
+            $main->desc = $desc;
             $main->image = $file_name;
             $main->date = $request->input('date', now());
             $main->status = $request->input('status', 'ACTIVE');

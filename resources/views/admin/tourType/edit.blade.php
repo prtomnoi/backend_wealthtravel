@@ -40,13 +40,22 @@
                         </div>
                         <h6 class="text-uppercase text-body text-xs font-weight-bolder"> Create Tour Type </h6>
                         <ul class="list-group">
+                            @foreach (@$config_lang ?? [] as $key => $item)
+
                             <li class="list-group-item border-0 px-0">
+                                <div class="form-group form-switch ps-0 datalange datalange_{{$item}} @if($key != 0) d-none @endif">
+                                    <label for="form-label text-body ms-3 text-truncate w-80 mb-0">Name [{{ $item }}]</label>
+                                    <input class="form-control" type="text" id="datalange[{{ $item }}][name]" name="datalange[{{ $item }}][name]" value="{{ @$main->getTranslation('name', $item) ?? null }}">
+                                </div>
+                            </li>
+                            @endforeach
+                            {{-- <li class="list-group-item border-0 px-0">
                                 <div class="form-group form-switch ps-0">
                                     <label for="form-label text-body ms-3 text-truncate w-80 mb-0">Name</label>
                                     <input class="form-control" type="text" id="name" name="name"
                                         value="{{ @$main->name }}">
                                 </div>
-                            </li>
+                            </li> --}}
                         </ul>
                         <a class="btn bg-gradient-secondary" href="{{ route('tourType.index') }}">Back</a>
                         <button class="btn bg-gradient-dark" type="submit">Save</button>
@@ -60,17 +69,17 @@
 @section('scripts')
     <script>
         function changeLange(e) {
-            console.log(e.id);
             document.getElementById("lange").value = e.id;
             document.getElementById("imageFlagDrowdown").src = e.querySelector('img').src;
-            updateLanguage(e.id);
-        }
-        var translations = @json(@$main->toArray());
-        var fields = ['name'];
-        function updateLanguage(language) {
-            fields.forEach(function(field) {
-                document.getElementById(field).value = translations[field][language] || '';
+            lange = document.querySelectorAll(`.datalange`);
+            lange.forEach(element => {
+                if(element.classList.contains(`datalange_${e.id}`)){
+                    element.classList.remove("d-none");
+                } else {
+                    element.classList.add("d-none");
+                }
             });
+            // updateLanguage(e.id);
         }
     </script>
 @endsection

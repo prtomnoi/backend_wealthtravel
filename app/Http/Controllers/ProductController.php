@@ -22,18 +22,13 @@ class ProductController extends Controller
     public function create(Request $request)
     {
         $productType = Models\ProductType::all();
-        return view('admin.product.create', compact('productType'));
+        $config_lang = $this->lang();
+        return view('admin.product.create', compact('productType', 'config_lang'));
     }
 
     public function store(Request $request)
     {
         $validate = $request->validate([
-            'name' => ['required'],
-            'image' => ['sometimes'],
-            'price' => ['sometimes'],
-            'star' => ['sometimes'],
-            'price_sale' => ['sometimes'],
-            'lange' => ['sometimes'],
             'type' => ['required'],
         ]);
         try {
@@ -46,11 +41,15 @@ class ProductController extends Controller
                 $file_name = null;
             }
             $main = new Models\Product();
-            $main->setTranslation('name', $request->input('lange', 'en'), $validate['name']);
+            $datalange = $request->input('datalange');
+            foreach ($this->lang() as $key => $value) {
+                $name[$value] = $datalange[$value]['name'] ?? null;
+            }
+            $main->name = $name;
             $main->price = $this->getAmount($request->input('price', 0));
-            $main->star = $request->input('star', 0);
+            $main->star = $request->input('star', '0');
             $main->price_sale = $this->getAmount($request->input('price_sale', 0));
-            $main->image = $file_name;
+            $main->image = $file_name ?? null;
             $main->status = $request->input('status', 'ACTIVE');
             $main->product_type_id = $request->input('type');
             $main->save();
@@ -66,18 +65,13 @@ class ProductController extends Controller
     {
         $main = Models\Product::find($id);
         $productType = Models\ProductType::all();
-        return view('admin.product.edit', compact('main', 'productType'));
+        $config_lang = $this->lang();
+        return view('admin.product.edit', compact('main', 'productType', 'config_lang'));
     }
 
     public function update(Request $request, $id)
     {
         $validate = $request->validate([
-            'name' => ['required'],
-            'image' => ['sometimes'],
-            'price' => ['sometimes'],
-            'star' => ['sometimes'],
-            'price_sale' => ['sometimes'],
-            'lange' => ['sometimes'],
             'type' => ['required'],
         ]);
         try {
@@ -93,7 +87,11 @@ class ProductController extends Controller
             } else {
                 $file_name = $main->image;
             }
-            $main->setTranslation('name', $request->input('lange', 'en'), $main->name);
+            $datalange = $request->input('datalange');
+            foreach ($this->lang() as $key => $value) {
+                $name[$value] = $datalange[$value]['name'] ?? null;
+            }
+            $main->name = $name;
             $main->price = $this->getAmount($request->input('price', $main->price));
             $main->star = $request->input('star', $main->star);
             $main->price_sale = $this->getAmount($request->input('price_sale', $main->price_sale));

@@ -16,4 +16,9 @@ abstract class Controller
 
         return (float) str_replace(',', '.', $removedThousandSeparator);
     }
+
+    public function lang()
+    {
+        return ['en', 'th'];
+    }
 }

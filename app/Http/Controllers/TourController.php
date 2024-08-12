@@ -21,15 +21,13 @@ class TourController extends Controller
     {
         $tourType = Models\TourType::all();
         $contry = Models\Country::select('alpha_3', 'name')->get();
-        return view('admin.tour.create', compact('tourType', 'contry'));
+        $config_lang = $this->lang();
+        return view('admin.tour.create', compact('tourType', 'contry', 'config_lang'));
     }
 
     public function store(Request $request)
     {
         $validate = $request->validate([
-            'title' => ['required'],
-            'sub_desc' => ['sometimes'],
-            'desc' => ['sometimes'],
             'city_id' => ['sometimes'],
             'start_date' => ['sometimes'],
             'end_date' => ['sometimes'],
@@ -41,9 +39,15 @@ class TourController extends Controller
         try {
             DB::beginTransaction();
             $main = new Models\Tour();
-            $main->setTranslation('title', $request->input('lange', 'en'), $validate['title']);
-            $main->setTranslation('sub_desc', $request->input('lange', 'en'), $request->input('sub_desc', ''));
-            $main->setTranslation('desc', $request->input('lange', 'en'), $request->input('desc', ''));
+            $datalange = $request->input('datalange');
+            foreach ($this->lang() as $key => $value) {
+                $title[$value] = $datalange[$value]['title'] ?? null;
+                $sub_desc[$value] = $datalange[$value]['sub_desc'] ?? null;
+                $desc[$value] = $datalange[$value]['desc'] ?? null;
+            }
+            $main->title = $title;
+            $main->sub_desc = $sub_desc;
+            $main->desc = $desc;
             $main->start_date = $request->input('start_date', now());
             $main->end_date = $request->input('end_date', now());
             $main->tour_type_id = $request->input('type');
@@ -91,8 +95,9 @@ class TourController extends Controller
             $tourType = Models\TourType::all();
             $contry = Models\Country::select('alpha_3', 'name')->get();
             $city = Models\City::select('id', 'city', 'iso3')->where('iso3', $main->city?->iso3)->get();
+            $config_lang = $this->lang();
             // dd($main->city?->iso3);
-            return view('admin.tour.edit', compact('main', 'tourType', 'contry', 'city'));
+            return view('admin.tour.edit', compact('main', 'tourType', 'contry', 'city', 'config_lang'));
         } catch (\Throwable $e) {
             return back()->withErrors(['cannot open edit', $e->getMessage()]);
         }
@@ -101,9 +106,6 @@ class TourController extends Controller
     public function update(Request $request, $id)
     {
         $validate = $request->validate([
-            'title' => ['required'],
-            'sub_desc' => ['sometimes'],
-            'desc' => ['sometimes'],
             'city_id' => ['sometimes'],
             'start_date' => ['sometimes'],
             'end_date' => ['sometimes'],
@@ -116,9 +118,15 @@ class TourController extends Controller
         try {
             DB::beginTransaction();
             $main = Models\Tour::find($id);
-            $main->setTranslation('title', $request->input('lange', 'en'), $request->input('title', $main->title));
-            $main->setTranslation('sub_desc', $request->input('lange', 'en'), $request->input('sub_desc', $main->sub_desc));
-            $main->setTranslation('desc', $request->input('lange', 'en'), $request->input('desc', $main->desc));
+            $datalange = $request->input('datalange');
+            foreach ($this->lang() as $key => $value) {
+                $title[$value] = $datalange[$value]['title'] ?? null;
+                $sub_desc[$value] = $datalange[$value]['sub_desc'] ?? null;
+                $desc[$value] = $datalange[$value]['desc'] ?? null;
+            }
+            $main->title = $title;
+            $main->sub_desc = $sub_desc;
+            $main->desc = $desc;
             $main->start_date = $request->input('start_date', $main->start_date);
             $main->end_date = $request->input('end_date', $main->end_date);
             $main->tour_type_id = $request->input('type', $main->tour_type_id);

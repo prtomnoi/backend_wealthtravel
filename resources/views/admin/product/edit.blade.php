@@ -112,16 +112,19 @@
                                     </select>
                                 </div>
                             </li>
+                            @foreach (@$config_lang ?? [] as $key => $item)
                             <li class="list-group-item border-0 px-0">
-                                <div class="form-group form-switch ps-0">
-                                    <label for="name">Name <span class="text-danger">*</span></label>
-                                    <input class="form-control" type="text" id="name" name="name" value="{{ @$main->name }}">
+                                <div class="form-group form-switch ps-0 datalange datalange_{{$item}} @if($key != 0) d-none @endif">
+                                    <label for="form-label text-body ms-3 text-truncate w-80 mb-0">Name [{{ $item }}]</label>
+                                    <input class="form-control" type="text" id="datalange[{{ $item }}][name]" name="datalange[{{ $item }}][name]" value="{{ @$main->getTranslation('name', $item) ?? null }}">
                                 </div>
                             </li>
+                            @endforeach
                             <li class="list-group-item border-0 px-0">
                                 <div class="form-group form-switch ps-0">
                                     <label for="price">Price</label>
-                                    <input class="form-control" type="text" id="price" name="price" value="{{ @$main->price }}">
+                                    <input class="form-control" type="text" id="price" name="price"
+                                        value="{{ @$main->price }}">
                                 </div>
                             </li>
                             <li class="list-group-item border-0 px-0">
@@ -138,14 +141,21 @@
                                         <div class=" d-flex">
                                             <div class=" text-center">
                                                 <div class="rating">
-                                                    <input type="radio" name="star" value="5"
-                                                        id="5" @if(@$main->star == 5) checked @endif ><label for="5">☆</label> <input type="radio"
-                                                        name="star" value="4" id="4" @if(@$main->star == 4) checked @endif><label
+                                                    <input type="radio" name="star" value="5" id="5"
+                                                        @if (@$main->star == 5) checked @endif><label
+                                                        for="5">☆</label> <input type="radio" name="star"
+                                                        value="4" id="4"
+                                                        @if (@$main->star == 4) checked @endif><label
                                                         for="4">☆</label> <input type="radio" name="star"
-                                                        value="3" id="3" @if(@$main->star == 3) checked @endif><label for="3">☆</label> <input
-                                                        type="radio" name="star" value="2" id="2" @if(@$main->star == 2) checked @endif><label
+                                                        value="3" id="3"
+                                                        @if (@$main->star == 3) checked @endif><label
+                                                        for="3">☆</label> <input type="radio" name="star"
+                                                        value="2" id="2"
+                                                        @if (@$main->star == 2) checked @endif><label
                                                         for="2">☆</label> <input type="radio" name="star"
-                                                        value="1" id="1" @if(@$main->star == 1) checked @endif><label for="1">☆</label>
+                                                        value="1" id="1"
+                                                        @if (@$main->star == 1) checked @endif><label
+                                                        for="1">☆</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -172,7 +182,7 @@
                                 </div>
                             </li>
                         </ul>
-                        <a class="btn bg-gradient-secondary" href="{{ route('service.index') }}">Back</a>
+                        <a class="btn bg-gradient-secondary" href="{{ route('product.index') }}">Back</a>
                         <button class="btn bg-gradient-dark" type="submit">Save</button>
                     </form>
                 </div>
@@ -183,18 +193,52 @@
 
 @section('scripts')
     <script>
+        function setInputFilter(textbox, inputFilter, errMsg) {
+            ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop", "focusout"].forEach(
+                function(event) {
+                    textbox.addEventListener(event, function(e) {
+                        if (inputFilter(this.value)) {
+                            // Accepted value.
+                            if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
+                                this.classList.remove("input-error");
+                                this.setCustomValidity("");
+                            }
+
+                            this.oldValue = this.value;
+                            this.oldSelectionStart = this.selectionStart;
+                            this.oldSelectionEnd = this.selectionEnd;
+                        } else if (this.hasOwnProperty("oldValue")) {
+                            // Rejected value: restore the previous one.
+                            this.classList.add("input-error");
+                            this.setCustomValidity(errMsg);
+                            this.reportValidity();
+                            this.value = this.oldValue;
+                            this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                        } else {
+                            // Rejected value: nothing to restore.
+                            this.value = "";
+                        }
+                    });
+                });
+        }
+        setInputFilter(document.getElementById("price"), function(value) {
+            return /^-?\d*[.,]?\d{0,2}$/.test(value);
+        }, "Must be a currency value");
+        setInputFilter(document.getElementById("price_sale"), function(value) {
+            return /^-?\d*[.,]?\d{0,2}$/.test(value);
+        }, "Must be a currency value");
+    </script>
+    <script>
         function changeLange(e) {
             document.getElementById("lange").value = e.id;
             document.getElementById("imageFlagDrowdown").src = e.querySelector('img').src;
-            updateLanguage(e.id);
-        }
-
-        var translations = @json(@$main->toArray());
-        var fields = ['name'];
-
-        function updateLanguage(language) {
-            fields.forEach(function(field) {
-                document.getElementById(field).value = translations[field][language] || '';
+            lange = document.querySelectorAll(`.datalange`);
+            lange.forEach(element => {
+                if (element.classList.contains(`datalange_${e.id}`)) {
+                    element.classList.remove("d-none");
+                } else {
+                    element.classList.add("d-none");
+                }
             });
         }
 

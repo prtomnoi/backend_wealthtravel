@@ -46,29 +46,31 @@
                                     <label for="title">Type</label>
                                     <select name="type" id="type" class="form-control">
                                         @foreach (@$serviceType as $item)
-                                            <option value="{{ @$item->id }}" @if(@$item->id == @$main->type) selected @endif>{{ @$item->name }}</option>
+                                            <option value="{{ @$item->id }}" @if(@$item->id == @$main->service_type_id) selected @endif>{{ @$item->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </li>
-                            <li class="list-group-item border-0 px-0">
+                            @foreach (@$config_lang ?? [] as $key => $item)
+                            <li class="list-group-item border-0 px-0 datalange datalange_{{$item}} @if($key != 0) d-none @endif">
                                 <div class="form-group form-switch ps-0">
-                                    <label for="title">Title</label>
-                                    <input class="form-control" type="text" id="title" name="title" value="{{ @$main->title }}">
+                                    <label for="title">Title [{{$item}}]</label>
+                                    <input class="form-control" type="text" id="datalange[{{ $item }}][title]" name="datalange[{{ $item }}][title]" value="{{ @$main->getTranslation("title", $item) ?? null }}">
                                 </div>
                             </li>
-                            <li class="list-group-item border-0 px-0">
+                            <li class="list-group-item border-0 px-0 datalange datalange_{{$item}} @if($key != 0) d-none @endif">
                                 <div class="form-group form-switch ps-0">
-                                    <label for="title">Sub Description</label>
-                                    <textarea class="form-control" id="sub_desc" rows="5" name="sub_desc">{{ @$main->sub_desc }}</textarea>
+                                    <label for="title">Sub Description [{{$item}}]</label>
+                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" id="datalange[{{ $item }}][sub_desc]" name="datalange[{{ $item }}][sub_desc]">{{ @$main->getTranslation("sub_desc", $item) ?? null }}</textarea>
                                 </div>
                             </li>
-                            <li class="list-group-item border-0 px-0">
+                            <li class="list-group-item border-0 px-0 datalange datalange_{{$item}} @if($key != 0) d-none @endif">
                                 <div class="form-group form-switch ps-0">
-                                    <label for="title">Description</label>
-                                    <textarea class="form-control" id="desc" rows="5" name="desc">{{ @$main->desc }}</textarea>
+                                    <label for="title">Description [{{$item}}]</label>
+                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" id="datalange[{{ $item }}][desc]" name="datalange[{{ $item }}][desc]">{{ @$main->getTranslation("desc", $item) ?? null }}</textarea>
                                 </div>
                             </li>
+                            @endforeach
                             <li class="list-group-item border-0 px-0">
                                 <div class="form-group form-switch ps-0">
                                     <label for="title">Image</label>
@@ -101,22 +103,16 @@
         function changeLange(e) {
             document.getElementById("lange").value = e.id;
             document.getElementById("imageFlagDrowdown").src = e.querySelector('img').src;
-            updateLanguage(e.id);
-        }
-
-        var translations = @json(@$main->toArray());
-        var fields = ['title', 'sub_desc', 'desc'];
-        function updateLanguage(language) {
-            fields.forEach(function(field) {
-                if(field == 'title'){
-                    document.getElementById(field).value = translations[field][language] || '';
+            lange = document.querySelectorAll(`.datalange`);
+            lange.forEach(element => {
+                if(element.classList.contains(`datalange_${e.id}`)){
+                    element.classList.remove("d-none");
                 } else {
-                    console.log(document.getElementById(field), field)
-                    document.getElementById(field).innerHTML = translations[field][language] || '';
+                    element.classList.add("d-none");
                 }
-
             });
         }
+
 
         function previewImage(e) {
             const [file] = e.files

@@ -122,6 +122,12 @@
                                 <div class="form__files-container" id="files-list-container">
                                 </div>
                             </li>
+                            <li class="list-group-item border-0 px-0">
+                                <div class="form-group form-switch ps-0">
+                                    <label for="duration">Upload Pdf</label>
+                                    <input type="file" class="form-control" name="uploadPdf" id="uploadPdf" accept="application/pdf"  />
+                                </div>
+                            </li>
                         </ul>
                         <a class="btn bg-gradient-secondary" href="{{ route('tour.index') }}">Back</a>
                         <button class="btn bg-gradient-dark" type="submit">Save</button>

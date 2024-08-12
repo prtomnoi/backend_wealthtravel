@@ -37,6 +37,11 @@ class Tour extends Model
     }
     public function AttachFile()
     {
-        return $this->hasMany(Attachment::class, 'ref_id')->where('group', 'tour');
+        return $this->hasMany(Attachment::class, 'ref_id')->where('group', 'tour')->where('type', '!=', 'pdf');
+    }
+
+    public function AttachFilePdf()
+    {
+        return $this->hasMany(Attachment::class, 'ref_id')->where('group', 'tour')->where('type', 'pdf');
     }
 }

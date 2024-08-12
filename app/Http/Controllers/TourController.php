@@ -15,9 +15,7 @@ class TourController extends Controller
         return view('admin.tour.index', compact('data'));
     }
 
-    public function show(Request $request, $id)
-    {
-    }
+    public function show(Request $request, $id) {}
 
     public function create(Request $request)
     {
@@ -53,9 +51,8 @@ class TourController extends Controller
             $main->price = $this->getAmount($request->input('price', 0));
             $main->city_id = $request->input('city_id');
             $main->save();
-            if($request->hasFile('uploadImage')){
-                foreach($request->uploadImage as $key => $item)
-                {
+            if ($request->hasFile('uploadImage')) {
+                foreach ($request->uploadImage as $key => $item) {
                     $filename = uniqid() . "_" . time() . "." . $item->getClientOriginalExtension();
                     Models\Attachment::create([
                         "name" => $filename,
@@ -66,6 +63,18 @@ class TourController extends Controller
                     ]);
                     $item->storeAs("tour", $filename, "local_public");
                 }
+            }
+            // pdf
+            if ($request->hasFile('uploadPdf')) {
+                $filename = uniqid() . "_" . time() . "." . $request->uploadPdf->getClientOriginalExtension();
+                Models\Attachment::create([
+                    "name" => $filename,
+                    "path" => "tour/" . $filename,
+                    "type" => $request->uploadPdf->getClientOriginalExtension(),
+                    "group" => "tour",
+                    "ref_id" => $main->id,
+                ]);
+                $request->uploadPdf->storeAs("tour", $filename, "local_public");
             }
             DB::commit();
             return redirect()->route('tour.index')->with('success', 'Insert value success.');
@@ -81,14 +90,12 @@ class TourController extends Controller
             $main = Models\Tour::find($id);
             $tourType = Models\TourType::all();
             $contry = Models\Country::select('alpha_3', 'name')->get();
-            $city = Models\City::select('id','city', 'iso3')->where('iso3', $main->city?->iso3)->get();
+            $city = Models\City::select('id', 'city', 'iso3')->where('iso3', $main->city?->iso3)->get();
             // dd($main->city?->iso3);
             return view('admin.tour.edit', compact('main', 'tourType', 'contry', 'city'));
-        } catch (\Throwable $e)
-        {
+        } catch (\Throwable $e) {
             return back()->withErrors(['cannot open edit', $e->getMessage()]);
         }
-
     }
 
     public function update(Request $request, $id)
@@ -104,6 +111,7 @@ class TourController extends Controller
             'lange' => ['sometimes'],
             'type' => ['sometimes'],
             'price' => ['sometimes'],
+            'uploadPdf' => ['sometimes', 'mimes:pdf', 'max:5000'],
         ]);
         try {
             DB::beginTransaction();
@@ -118,9 +126,9 @@ class TourController extends Controller
             $main->price = $this->getAmount($request->input('price', $main->price));
             $main->city_id = $request->input('city_id', $main->city_id);
             $main->save();
-            if($request->hasFile('uploadImage')){
-                foreach($request->uploadImage as $key => $item)
-                {
+            // image
+            if ($request->hasFile('uploadImage')) {
+                foreach ($request->uploadImage as $key => $item) {
                     $filename = uniqid() . "_" . time() . "." . $item->getClientOriginalExtension();
                     Models\Attachment::create([
                         "name" => $filename,
@@ -132,6 +140,24 @@ class TourController extends Controller
                     $item->storeAs("tour", $filename, "local_public");
                 }
             }
+            // pdf
+            if ($request->hasFile('uploadPdf')) {
+                if($main->AttachFilePdf){
+                    foreach ($main->AttachFilePdf as $key => $value) {
+                        File::delete(public_path('app/'. $value?->path));
+                        $value->delete();
+                    }
+                }
+                $filename = uniqid() . "_" . time() . "." . $request->uploadPdf->getClientOriginalExtension();
+                Models\Attachment::create([
+                    "name" => $filename,
+                    "path" => "tour/" . $filename,
+                    "type" => $request->uploadPdf->getClientOriginalExtension(),
+                    "group" => "tour",
+                    "ref_id" => $main->id,
+                ]);
+                $request->uploadPdf->storeAs("tour", $filename, "local_public");
+            }
             DB::commit();
             return redirect()->route('tour.index')->with('success', 'Update value success.');
         } catch (\Exception $e) {
@@ -140,7 +166,7 @@ class TourController extends Controller
         }
     }
 
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, $id)
     {
         // $validate = $request->validate([
         //     'status' => "sometimes",
@@ -166,5 +192,11 @@ class TourController extends Controller
             ];
             return response()->json($res);
         }
+    }
+
+    public function downloadPdf(Request $request ,$id)
+    {
+        $main = Models\Tour::find($id);
+        return response()->download(public_path('app/'. $main->AttachFilePdf[0]?->path));
     }
 }

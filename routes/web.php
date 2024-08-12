@@ -22,6 +22,7 @@ Route::middleware(HandleAuth::class)->group(function(){
     Route::resource('tour', AppController\TourController::class);
     Route::delete('/attachment/{id}', [AppController\AttachmentController::class, 'destroy']);
     Route::get('/tour/generate-pdf/{id}', [AppController\TourController::class, 'downloadPdf'])->name('tour.pdf');
+    Route::resource('reviews', AppController\ReviewsController::class);
 
     // city by contry
     Route::get('/cityByContry/{iso}', [AppController\CityController::class, 'cityByContry']);

@@ -59,14 +59,10 @@ class TourCollection extends ResourceCollection
             return null;
         }
 
-        // Parse the URL to get existing parameters
         $parsedUrl = parse_url($url);
         parse_str($parsedUrl['query'] ?? '', $existingParams);
-
-        // Merge existing query parameters with the provided ones
         $finalParams = array_merge($existingParams, $queryParams);
 
-        // Return the full URL as a string
         return url($parsedUrl['path'] . '?' . http_build_query($finalParams));
     }
 

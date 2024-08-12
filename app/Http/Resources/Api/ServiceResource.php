@@ -3,7 +3,7 @@ namespace App\Http\Resources\Api;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TourResource extends JsonResource
+class ServiceResource extends JsonResource
 {
     protected $lang;
 
@@ -26,15 +26,10 @@ class TourResource extends JsonResource
             'title' => $this->getTranslation('title', $this->lang),
             'sub_desc' => $this->getTranslation('sub_desc', $this->lang),
             'desc' => $this->getTranslation('desc', $this->lang),
-            'city' => new CityResource($this->whenLoaded('city')),
-            'tour_type' => new TourTypeResource($this->whenLoaded('tourType')),
-            'attachments' => AttachmentResource::collection($this->whenLoaded('AttachFile')),
-            'start_date' => $this->start_date,
-            'end_date' => $this->end_date,
-            'duration' => $this->duration,
-            'price' => $this->price,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'image' => $this->image ? url('storage/' . $this->image) : null,
+            'date' => $this->date,
+            'status' => $this->status,
+            'service_type' => new ServiceTypeResource($this->whenLoaded('serviceType')),
         ];
     }
 }

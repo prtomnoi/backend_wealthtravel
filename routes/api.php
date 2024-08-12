@@ -3,7 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\TourController;
-
+use App\Http\Controllers\Api\ServiceController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ProductTypeController;
+use App\Http\Controllers\Api\ServiceTypeController;
+use App\Http\Controllers\Api\TourTypeController;
 
 
 Route::get('/user', function (Request $request) {
@@ -13,3 +17,11 @@ Route::get('/user', function (Request $request) {
 
 Route::get('tours', [TourController::class, 'index']);
 Route::get('tours/{id}', [TourController::class, 'show']);
+
+Route::apiResource('services', ServiceController::class);
+
+Route::apiResource('products', ProductController::class);
+
+Route::apiResource('product-types', ProductTypeController::class)->only(['index', 'show']);
+Route::apiResource('service-types', ServiceTypeController::class)->only(['index', 'show']);
+Route::apiResource('tour-types', TourTypeController::class)->only(['index', 'show']);

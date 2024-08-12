@@ -12,7 +12,7 @@ class TourController extends Controller
     public function index(Request $request)
     {
         $lang = $request->query('lang', 'en'); 
-        $keyword = $request->query('keyword');
+        $keyword = $request->query('search');
         $city = $request->query('city');
         $country = $request->query('country');
         $perPage = $request->query('per_page', 10);
